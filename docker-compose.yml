@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  backend:
+    build:
+      context: ./backend # Path to the backend folder
+    ports:
+      - "3001:3001" # Map container port 3001 to localhost:3001
+    volumes:
+      - ./backend:/usr/src/app
+    command: npm run dev # Start the backend
+
+  frontend:
+    build:
+      context: ./frontend # Path to the frontend folder
+    ports:
+      - "3000:3000" # Map container port 3000 to localhost:3000
+    volumes:
+      - ./frontend:/usr/src/app
+    command: npm run dev # Start the frontend
