@@ -1,8 +1,15 @@
 "use client";
 import React, { useState } from "react";
 
+interface Discrepancy {
+  cpoTariff?: {
+    region?: string;
+  };
+  message: string;
+}
+
 const Home = () => {
-  const [discrepancies, setDiscrepancies] = useState([]);
+  const [discrepancies, setDiscrepancies] = useState<Discrepancy[]>([]);
 
   const handleValidation = async () => {
     const response = await fetch("http://localhost:3001/api/validate-tariffs", {
