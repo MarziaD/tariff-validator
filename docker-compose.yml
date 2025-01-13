@@ -1,19 +1,17 @@
 version: "3.8"
 services:
   backend:
-    build:
-      context: ./backend
+    image: marzia256/my-backend:latest
     ports:
       - "3001:3001"
-    volumes:
-      - ./backend:/usr/src/app
-    command: npm run dev
+    environment:
+      - NODE_ENV=production
+    command: npm start
 
   frontend:
-    build:
-      context: ./frontend
+    image: marzia256/my-frontend:latest
     ports:
       - "3000:3000"
-    volumes:
-      - ./frontend:/usr/src/app
-    command: npm run dev
+    environment:
+      - NODE_ENV=production
+    command: npm start
