@@ -1,37 +1,60 @@
 "use client";
+
 import React, { useState } from "react";
 import axios from "axios";
-import { ValidationResult } from "./types/validation";
+
+interface ValidationResult {
+  isValid: boolean;
+  discrepancies: Array<{
+    field: string;
+    expected: any;
+    actual: any;
+    message: string;
+  }>;
+}
 
 const FileUpload = () => {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [validationResult, setValidationResult] =
     useState<ValidationResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setError(null);
     setValidationResult(null);
 
-    if (e.target.files) {
-      const selectedFile = e.target.files[0];
-      const allowedTypes = ["text/csv", "application/json", "text/html"];
+    const files = e.target.files;
+    if (!files || files.length === 0) {
+      return;
+    }
 
-      if (!allowedTypes.includes(selectedFile.type)) {
-        setError(
-          "Invalid file type. Please only upload CSV, JSON, or HTML files."
-        );
+    const selectedFile = files[0];
+
+    const allowedTypes = [
+      "text/csv",
+      "application/json",
+      "text/html",
+      "application/vnd.ms-excel",
+      "text/plain",
+    ];
+
+    if (!allowedTypes.includes(selectedFile.type)) {
+      const extension = selectedFile.name.split(".").pop()?.toLowerCase();
+      if (!["csv", "json", "html"].includes(extension || "")) {
+        setError("Please upload only CSV, JSON, or HTML files");
         return;
       }
-      3;
-
-      setFile(selectedFile);
     }
+
+    setFile(selectedFile);
   };
 
   const onFileUpload = async () => {
-    if (!file) return;
+    if (!file) {
+      setError("Please select a file first");
+      return;
+    }
 
     setLoading(true);
     setError(null);
@@ -42,10 +65,17 @@ const FileUpload = () => {
     try {
       const response = await axios.post(
         "http://localhost:3001/upload",
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
+
       setValidationResult(response.data.validationResult);
     } catch (error) {
+      console.error("Upload error:", error);
       setError(error instanceof Error ? error.message : "File upload failed");
     } finally {
       setLoading(false);
