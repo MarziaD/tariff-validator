@@ -1,53 +1,36 @@
 "use client";
+
 import React, { useState } from "react";
+import axios from "axios";
 
-interface Discrepancy {
-  cpoTariff?: {
-    region?: string;
+const Page = () => {
+  const [file, setFile] = useState<File | null>(null);
+
+  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFile(e.target.files[0]);
+    }
   };
-  message: string;
-}
 
-const Home = () => {
-  const [discrepancies, setDiscrepancies] = useState<Discrepancy[]>([]);
+  const onFileUpload = () => {
+    if (!file) return;
 
-  const handleValidation = async () => {
-    const response = await fetch("http://localhost:3001/api/validate-tariffs", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        cpoType: "csv",
-        filePath: "./cpoData.csv",
-      }),
-    });
-    const data = await response.json();
-    setDiscrepancies(data.discrepancies || []);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    axios
+      .post("http://localhost:3001/upload", formData)
+      .then(() => alert("Successfully uploaded file"))
+      .catch(() => alert("Failed to upload file"));
   };
 
   return (
     <div>
-      <h1>Tariff Validator</h1>
-      <button onClick={handleValidation}>Validate Tariffs</button>
-      {discrepancies.length > 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th>Discrepancy</th>
-              <th>Message</th>
-            </tr>
-          </thead>
-          <tbody>
-            {discrepancies.map((discrepancy, index) => (
-              <tr key={index}>
-                <td>{discrepancy.cpoTariff?.region || "N/A"}</td>
-                <td>{discrepancy.message}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+      <h1>Upload a File</h1>
+      <input type="file" onChange={onFileChange} />
+      <button onClick={onFileUpload}>Upload</button>
     </div>
   );
 };
 
-export default Home;
+export default Page;

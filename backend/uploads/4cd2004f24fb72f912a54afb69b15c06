@@ -1,0 +1,9 @@
+plan_name,currency,provider,price_per_kwh,hourly_parking_rate,start_time,end_time
+Basic Plan,USD,US*CPO,0.25,2.0,9:00,18:00
+Value Rate,EUR,ES*CPO,0.32,2.5,9:00,18:00
+Green Energy Plan,GBP,GB*CPO,0.2,1.8,9:00,18:00
+Fast Charge Plus,CAD,CA*CPO,0.28,2.2,9:00,18:00
+Night Owl,USD,US*CPO,0.15,1.0,22:00,6:00
+Peak Saver,EUR,ES*CPO,0.18,1.2,20:00,8:00
+Highway Express,GBP,GB*CPO,0.35,3.0,0:00,23:59
+City Center,CAD,CA*CPO,0.3,4.0,8:00,20:00

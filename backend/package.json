@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "npx ts-node -r ts-node/register src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "type": "module",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -20,9 +22,15 @@
     "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.26.0",
     "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.14",
     "@types/multer": "^1.4.12",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
     "nodemon": "^3.1.9",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   }
