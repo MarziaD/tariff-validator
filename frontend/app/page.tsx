@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const Page = () => {
+const FileUpload = () => {
   const [file, setFile] = useState<File | null>(null);
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,17 +20,19 @@ const Page = () => {
 
     axios
       .post("http://localhost:3001/upload", formData)
-      .then(() => alert("Successfully uploaded file"))
-      .catch(() => alert("Failed to upload file"));
+      .then(() => alert("File uploaded successfully"))
+      .catch(() => alert("File upload failed"));
   };
 
   return (
     <div>
       <h1>Upload a File</h1>
-      <input type="file" onChange={onFileChange} />
-      <button onClick={onFileUpload}>Upload</button>
+      <input type="file" accept=".csv, .json, .html" onChange={onFileChange} />
+      <button onClick={onFileUpload} style={{ marginTop: "10px" }}>
+        Upload
+      </button>
     </div>
   );
 };
 
-export default Page;
+export default FileUpload;
