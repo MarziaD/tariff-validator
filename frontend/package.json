@@ -25,6 +25,7 @@
   "dependencies": {
     "@types/express": "^5.0.0",
     "axios": "^1.7.9",
+    "multer": "^1.4.5-lts.1",
     "next": "15.1.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -37,6 +38,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@types/jest": "^29.5.14",
+    "@types/multer": "^1.4.12",
     "@types/node": "^20.17.12",
     "@types/react": "^19",
     "@types/react-dom": "^19",
