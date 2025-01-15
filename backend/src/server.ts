@@ -1,59 +1,43 @@
 import express, { Request, Response } from "express";
 import multer from "multer";
 import cors from "cors";
-import { validateTariffData } from "./tariffValidator";
-import { parseFileContent } from "./utils/fileParser";
+import { TariffValidator } from "./validators/tariffValidator";
+
+interface MulterRequest extends Request {
+  file?: Express.Multer.File;
+}
 
 const app = express();
+const upload = multer({ storage: multer.memoryStorage() });
+const validator = new TariffValidator();
 
 app.use(cors());
 
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: 5 * 1024 * 1024,
-  },
-});
-
 app.post(
-  "/upload",
+  "/validate",
   upload.single("file"),
-  async (req: Request & { file?: Express.Multer.File }, res: Response) => {
+  async (req: MulterRequest, res: Response): Promise<void> => {
     try {
       if (!req.file) {
         res.status(400).json({ message: "No file uploaded" });
         return;
       }
 
-      const fileType = req.file.mimetype;
-      if (!["text/csv", "application/json", "text/html"].includes(fileType)) {
-        res.status(400).json({ message: "Invalid file type" });
-        return;
-      }
+      const result = await validator.validateTariffs(
+        req.file.buffer,
+        req.file.mimetype
+      );
 
-      const parsedData = await parseFileContent(req.file.buffer, fileType);
-
-      const validationResult = validateTariffData(parsedData);
-
-      res.status(200).json({
-        message: "File validated successfully",
-        validationResult,
-        file: {
-          filename: req.file.originalname,
-          size: req.file.size,
-          mimetype: req.file.mimetype,
-        },
-      });
+      res.json(result);
     } catch (error) {
-      console.error("Error processing file:", error);
-      res.status(500).json({
-        message: "Error processing file",
-        error: error instanceof Error ? error.message : "Unknown error",
-      });
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      res.status(500).json({ message: errorMessage });
     }
   }
 );
 
-app.listen(3001, () => {
-  console.log("Backend server running on http://localhost:3001");
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
